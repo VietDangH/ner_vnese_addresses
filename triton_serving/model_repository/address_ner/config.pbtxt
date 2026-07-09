@@ -1,0 +1,49 @@
+# Triton model configuration for the PhoBERT address-NER model.
+#
+# Served by the Python backend (see 1/model.py) because the model needs heavy
+# Python pre/post-processing (VN word segmentation, PhoBERT tokenisation, softmax
+# decode, token->char alignment) that would be awkward to express as a pure
+# ONNX/TensorRT graph. This is the Triton counterpart to serving/ (FastAPI).
+#
+# Wire format:
+#   input  TEXT    one address string   (per-request batch of size N allowed)
+#   output RESULT  the prediction as a JSON string, one per input text
+
+name: "address_ner"
+backend: "python"
+
+# Enable batching. Each request carries a [N,1] batch of strings; Triton's
+# dynamic batcher also *merges concurrent requests* into one execute() call —
+# the headline feature you don't get from a plain FastAPI/uvicorn worker.
+max_batch_size: 16
+
+input [
+  {
+    name: "TEXT"
+    data_type: TYPE_STRING
+    dims: [ 1 ]
+  }
+]
+
+output [
+  {
+    name: "RESULT"
+    data_type: TYPE_STRING
+    dims: [ 1 ]
+  }
+]
+
+# Wait up to 5 ms to accumulate a bigger batch before running.
+dynamic_batching {
+  max_queue_delay_microseconds: 5000
+}
+
+# One CPU instance. Bump `count` to serve more requests concurrently (each
+# instance loads its own copy of the model, like `uvicorn --workers N`), or
+# switch to `kind: KIND_GPU` on a GPU box — the model auto-detects CUDA.
+instance_group [
+  {
+    count: 1
+    kind: KIND_CPU
+  }
+]
