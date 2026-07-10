@@ -1,7 +1,7 @@
 # Vietnamese Address NER
 
 Named-entity recognition for Vietnamese addresses. Given a free-form address
-string, the models tag each part with its role — house number, street, ward,
+string, the models tag each part with its role - house number, street, ward,
 district, city, and more:
 
 ```
@@ -14,7 +14,7 @@ district, city, and more:
 
 ## What's inside
 
-The repo covers the full pipeline — from raw data to a served API — with several
+The repo covers the full pipeline - from raw data to a served API - with several
 interchangeable modelling approaches so they can be trained and benchmarked
 through an identical metrics path.
 
@@ -24,7 +24,7 @@ through an identical metrics path.
 | [`PhoBERT/`](PhoBERT/README.md) | PhoBERT model on **word-segmented** text; pluggable top layer (BiLSTM/CNN) and head (softmax/CRF) |
 | [`BamiBERT/`](BamiBERT/README.md) | Same architecture on **raw syllables** (no word segmenter needed) |
 | [`rule_based model/`](rule_based%20model/README.md) | Deterministic gazetteer + trigger-word tagger; a no-training baseline |
-| [`scripts/`](scripts/) | Standalone data post-processing helpers — quality-check the CoNLL data, synthesize extra samples, and compute label stats |
+| [`scripts/`](scripts/) | Standalone data post-processing helpers - quality-check the CoNLL data, synthesize extra samples, and compute label stats |
 | [`fastapi_serving/`](fastapi_serving/README.md) | REST API (FastAPI) for single / batch / file prediction |
 | [`triton_serving/`](triton_serving/README.md) | Triton Inference Server serving the same model, identical outputs |
 | [`VnCoreNLP-master/`](VnCoreNLP-master/) | Vendored VnCoreNLP word segmenter used by PhoBERT |
